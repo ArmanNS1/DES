@@ -7,229 +7,47 @@ namespace DES
         // Initial permutation table
         private static readonly int[] IP = new int[]
         {
-            58,
-            50,
-            42,
-            34,
-            26,
-            18,
-            10,
-            2,
-            60,
-            52,
-            44,
-            36,
-            28,
-            20,
-            12,
-            4,
-            62,
-            54,
-            46,
-            38,
-            30,
-            22,
-            14,
-            6,
-            64,
-            56,
-            48,
-            40,
-            32,
-            24,
-            16,
-            8,
-            57,
-            49,
-            41,
-            33,
-            25,
-            17,
-            9,
-            1,
-            59,
-            51,
-            43,
-            35,
-            27,
-            19,
-            11,
-            3,
-            61,
-            53,
-            45,
-            37,
-            29,
-            21,
-            13,
-            5,
-            63,
-            55,
-            47,
-            39,
-            31,
-            23,
-            15,
-            7
+            58, 50, 42, 34, 26, 18, 10, 2, 
+            60, 52, 44, 36, 28, 20, 12, 4,
+            62, 54, 46, 38, 30, 22, 14, 6,
+            64, 56, 48, 40, 32, 24, 16, 8,
+            57, 49, 41, 33, 25, 17, 9, 1,
+            59, 51, 43, 35, 27, 19, 11, 3,
+            61, 53, 45, 37, 29, 21, 13, 5,
+            63, 55, 47, 39, 31, 23, 15, 7
         };
 
         // Final permutation table (inverse of IP)
         private static readonly int[] FP = new int[]
         {
-            40,
-            8,
-            48,
-            16,
-            56,
-            24,
-            64,
-            32,
-            39,
-            7,
-            47,
-            15,
-            55,
-            23,
-            63,
-            31,
-            38,
-            6,
-            46,
-            14,
-            54,
-            22,
-            62,
-            30,
-            37,
-            5,
-            45,
-            13,
-            53,
-            21,
-            61,
-            29,
-            36,
-            4,
-            44,
-            12,
-            52,
-            20,
-            60,
-            28,
-            35,
-            3,
-            43,
-            11,
-            51,
-            19,
-            59,
-            27,
-            34,
-            2,
-            42,
-            10,
-            50,
-            18,
-            58,
-            26,
-            33,
-            1,
-            41,
-            9,
-            49,
-            17,
-            57,
-            25
+            40, 8, 48, 16, 56, 24, 64, 32,
+            39, 7, 47, 15, 55, 23, 63, 31,
+            38, 6, 46, 14, 54, 22, 62, 30,
+            37, 5, 45, 13, 53, 21, 61, 29,
+            36, 4, 44, 12, 52, 20, 60, 28,
+            35, 3, 43, 11, 51, 19, 59, 27,
+            34, 2, 42, 10, 50, 18, 58, 26,
+            33, 1, 41, 9, 49, 17, 57, 25
         };
 
         // Expansion box (E-box) - expands 32-bit block to 48 bits
         private static readonly int[] EBox = new int[]
         {
-            32,
-            1,
-            2,
-            3,
-            4,
-            5,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            24,
-            25,
-            26,
-            27,
-            28,
-            29,
-            28,
-            29,
-            30,
-            31,
-            32,
-            1
+            32, 1, 2, 3, 4, 5, 4, 5,
+            6, 7, 8, 9, 8, 9, 10, 11,
+            12, 13,12,13,14,15,16,17,
+            16, 17,18,19,20,21,20,21,
+            22, 23,24,25,24,25,26,27,
+            28, 29,28,29,30,31,32, 1
         };
 
         // P-box permutation
         private static readonly int[] PBox = new int[]
         {
-            16,
-            7,
-            20,
-            21,
-            29,
-            12,
-            28,
-            17,
-            1,
-            15,
-            23,
-            26,
-            5,
-            18,
-            31,
-            10,
-            2,
-            8,
-            24,
-            14,
-            32,
-            27,
-            3,
-            9,
-            19,
-            13,
-            30,
-            6,
-            22,
-            11,
-            4,
-            25
+            16, 7, 20, 21, 29, 12, 28, 17,
+            1, 15, 23, 26, 5, 18, 31, 10,
+            2, 8, 24, 14, 32, 27, 3, 9,
+            19, 13, 30, 6, 22, 11, 4, 25
         };
 
         // S-boxes
@@ -311,10 +129,10 @@ namespace DES
 
         public static BitArray EncryptBlock(BitArray plainBlock64, List<BitArray> roundKeys)
         {
-            // Step 1: Initial Permutation
+            //Initial Permutation
             BitArray permuted = Permute(plainBlock64, IP);
 
-            // Step 2: Split into L and R (32 bits each)
+            //Split into L and R
             BitArray L = new(32);
             BitArray R = new(32);
             for (int i = 0; i < 32; i++)
@@ -323,7 +141,7 @@ namespace DES
                 R[i] = permuted[i + 32];
             }
 
-            // Step 3: 16 Feistel rounds
+            //16 Feistel rounds
             for (int round = 0; round < 16; round++)
             {
                 BitArray previousR = R;
@@ -331,7 +149,7 @@ namespace DES
                 L = previousR;
             }
 
-            // Step 4: Combine R and L (note the swap!)
+            //Combine R and L
             BitArray preOutput = new(64);
             for (int i = 0; i < 32; i++)
             {
@@ -339,7 +157,6 @@ namespace DES
                 preOutput[i + 32] = L[i];
             }
 
-            // Step 5: Final Permutation
             return Permute(preOutput, FP);
         }
 
@@ -353,16 +170,16 @@ namespace DES
 
         private static BitArray F(BitArray right32, BitArray roundKey48)
         {
-            // Step 1: Expand 32-bit R to 48 bits
+            //Expand 32-bit R
             BitArray expandedRight = Permute(right32, EBox);
 
-            // Step 2: XOR with round key
+            //XOR with round key
             expandedRight.Xor(roundKey48);
 
-            // Step 3: S-box substitution (48 → 32 bits)
+            //S-box substitution
             BitArray sBoxOutput = SBoxSubstitution(expandedRight);
 
-            // Step 4: P-box permutation
+            //P-box permutation
             return Permute(sBoxOutput, PBox);
         }
 
@@ -375,7 +192,6 @@ namespace DES
             // Process each 6-bit group through corresponding S-box
             for (int sboxIndex = 0; sboxIndex < 8; sboxIndex++)
             {
-                // Extract 6 bits for current S-box
                 int row = (input48[inputIndex] ? 2 : 0) | (input48[inputIndex + 5] ? 1 : 0);
                 int col =
                     (input48[inputIndex + 1] ? 8 : 0)
@@ -385,8 +201,7 @@ namespace DES
 
                 // Get 4-bit output from S-box
                 int value = SBoxes[sboxIndex][row, col];
-
-                // Convert to bits and add to output
+                
                 for (int bit = 3; bit >= 0; bit--)
                     output32[outputIndex + bit] = (value & (1 << bit)) != 0;
 
@@ -401,7 +216,7 @@ namespace DES
         {
             BitArray output = new(table.Length);
             for (int i = 0; i < table.Length; i++)
-                output[i] = input[table[i] - 1]; // DES tables are 1-indexed
+                output[i] = input[table[i] - 1];
             return output;
         }
     }
